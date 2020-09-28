@@ -215,7 +215,7 @@ class PlayScraper(object):
         suggestions = [q["s"] for q in response.json()]
         return suggestions
 
-    def search(self, query, page=None, detailed=False, **kwargs):
+    def search(self, query, page=None, detailed=False, escaped_search=True, **kwargs):
         """Sends a POST request and retrieves a list of applications matching
         the query term(s).
 
@@ -233,7 +233,7 @@ class PlayScraper(object):
         pagtok = self._pagtok[page]
         data = generate_post_data(0, 0, pagtok)
 
-        self.params.update({"q": quote_plus(query), "c": "apps"})
+        self.params.update({"q": quote_plus(query) if escaped_search else query, "c": "apps"})
         kwargs.update({"params": self.params, "data": data})
 
         response = send_request("POST", self._search_url, **kwargs)
